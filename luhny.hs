@@ -21,11 +21,10 @@ isSpace _ = False
 type Total = (Int, Int, Seq Int)
 
 data Item
-	= Char Char
-	| Item {
-		char :: Char,
-		thing :: Thing
-	} deriving (Read, Show)
+	= Space Char
+	| Digit Char Total
+	| Other Char
+	deriving (Read, Show)
 
 type Stream = Seq Item
 
@@ -57,26 +56,27 @@ foo (_, _, zeros) = let
 
 
 item :: Char -> Item
-item char = Item { char = char, thing = new }
+item char = Digit char new
 
 incr :: Int -> Item -> Item
 incr num item = case item of
-	Char _ -> item
-	otherwise -> item { thing = add num $ thing item }
+	Digit char total -> Digit char $ add num total
+	otherwise -> item
 
 eval :: Item -> Int
 eval item = case item of
-	Char _ -> 0
-	otherwise -> foo $ thing item
+	Digit _ total -> foo total
+	otherwise -> 0
 
 snarf :: Item -> (Stream, Int) -> (Stream, Int)
 snarf item (stream, count) = case item of
-	Char _ -> (item <| stream, count)
-	otherwise -> let
+	Space _ -> (item <| stream, count)
+	Other _ -> (item <| stream, count)
+	Digit char total -> let
 		count' = max count $ eval item
 		in if count' == 0
-			then ((Char $ char item) <| stream, 0)
-			else ((Char masking) <| stream, count' - 1)
+			then ((Other char) <| stream, 0)
+			else ((Other masking) <| stream, count' - 1)
 
 convert :: Stream -> Stream
 convert = fst . foldr snarf (Seq.empty, 0)
@@ -88,16 +88,17 @@ insert num = fmap $ incr num
 insert_stream :: Char -> Stream -> Stream
 insert_stream char stream
 	| isDigit char = insert (digitToInt char) $ (item char) <| stream
-	| isSpace char = (Char char) <| stream
-	| otherwise = (Char char) <| stream
+	| isSpace char = (Space char) <| stream
+	| otherwise = (Other char) <| stream
 
 inject :: String -> Stream
 inject = foldr insert_stream Seq.empty
 
 
 insert_string :: Item -> String -> String
-insert_string (Char char) = (char:)
-insert_string (Item { char = char }) = (char:)
+insert_string (Space char) = (char:)
+insert_string (Other char) = (char:)
+insert_string (Digit char _) = (char:)
 
 extract :: Stream -> String
 extract = foldr insert_string ""
