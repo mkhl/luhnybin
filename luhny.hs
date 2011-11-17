@@ -38,12 +38,6 @@ add twice x y = (y + z) `mod` 10
 new :: Total
 new = (0, 0, empty)
 
-updateTotal :: Int -> Total -> Total
-updateTotal number (total, count, zeros) = (total', count', zeros')
-	where
-		total' = add (odd count) number total
-		count' = count + 1
-		zeros' = if total' == 0 then count' <| zeros else zeros
 
 maskCount :: Total -> Int
 maskCount (_, _, zeros) = if null zeros' then 0 else index zeros' 0
@@ -54,6 +48,23 @@ maskChar char count = if count == 0
 	then (char, 0)
 	else (masking, count - 1)
 
+mask :: Item -> (Stream, Int) -> (Stream, Int)
+mask item (stream, count) = case item of
+	Space _ -> (item <| stream, count)
+	Other _ -> (item <| stream, 0)
+	Digit char total -> ((Other char') <| stream, count')
+		where (char', count') = maskChar char $ max count $ maskCount total
+
+maskStream :: Stream -> Stream
+maskStream = fst . foldr mask (empty, 0)
+
+
+updateTotal :: Int -> Total -> Total
+updateTotal number (total, count, zeros) = (total', count', zeros')
+	where
+		total' = add (odd count) number total
+		count' = count + 1
+		zeros' = if total' == 0 then count' <| zeros else zeros
 
 updateItem :: Int -> (Stream, Bool) -> Item -> (Stream, Bool)
 updateItem number (stream, False) item = (stream |> item, False)
@@ -62,18 +73,6 @@ updateItem number (stream, True) item = case item of
 	Other _ -> (stream |> item, False)
 	Digit char total -> (stream |> item', True)
 		where item' = Digit char $ updateTotal number total
-
-
-mask :: Item -> (Stream, Int) -> (Stream, Int)
-mask item (stream, count) = case item of
-	Space _ -> (item <| stream, count)
-	Other _ -> (item <| stream, 0)
-	Digit char total -> ((Other char') <| stream, count')
-		where (char', count') = maskChar char $ max count $ maskCount total
-
-
-maskStream :: Stream -> Stream
-maskStream = fst . foldr mask (empty, 0)
 
 update :: Int -> Stream -> Stream
 update number = fst . foldl (updateItem number) (empty, True)
