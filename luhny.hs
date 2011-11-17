@@ -18,11 +18,7 @@ isSpace ' ' = True
 isSpace '-' = True
 isSpace _ = False
 
-data Thing = Thing {
-	total :: Int,
-	count :: Int,
-	zeros :: Seq Int
-} deriving (Read, Show)
+type Total = (Int, Int, Seq Int)
 
 data Item
 	= Char Char
@@ -44,22 +40,18 @@ double_plus double x y = let
 	in (y + z) `mod` 10
 
 
-new :: Thing
-new = Thing {
-	total = 0,
-	count = 0,
-	zeros = Seq.empty
-}
+new :: Total
+new = (0, 0, Seq.empty)
 
-add :: Int -> Thing -> Thing
-add number thing@(Thing { total = total, count = count, zeros = zeros }) = let
+add :: Int -> Total -> Total
+add number (total, count, zeros) = let
 	total' = double_plus (odd count) number total
 	count' = count + 1
 	zeros' = if total' == 0 then count' <| zeros else zeros
-	in Thing { total = total', count = count', zeros = zeros' }
+	in (total', count', zeros')
 
-foo :: Thing -> Int
-foo Thing { zeros = zeros } = let
+foo :: Total -> Int
+foo (_, _, zeros) = let
 	zeros' = Seq.takeWhileL (>=minimum) $ Seq.dropWhileL (>maximum) zeros
 	in if Seq.null zeros' then 0 else Seq.index zeros' 0
 
