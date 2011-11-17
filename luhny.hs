@@ -33,26 +33,23 @@ twice :: Int -> Int
 twice n = uncurry (+) $ flip divMod 10 $ 2 * n
 
 double_plus :: Bool -> Int -> Int -> Int
-double_plus double x y = let
-	f = if double then twice else id
-	z = f x
-	in (y + z) `mod` 10
+double_plus double x y = (y + z) `mod` 10
+	where z = if double then twice x else x
 
 
 new :: Total
 new = (0, 0, Seq.empty)
 
 add :: Int -> Total -> Total
-add number (total, count, zeros) = let
-	total' = double_plus (odd count) number total
-	count' = count + 1
-	zeros' = if total' == 0 then count' <| zeros else zeros
-	in (total', count', zeros')
+add number (total, count, zeros) = (total', count', zeros')
+	where
+		total' = double_plus (odd count) number total
+		count' = count + 1
+		zeros' = if total' == 0 then count' <| zeros else zeros
 
 maskCount :: Total -> Int
-maskCount (_, _, zeros) = let
-	zeros' = Seq.takeWhileL (>=minimum) $ Seq.dropWhileL (>maximum) zeros
-	in if Seq.null zeros' then 0 else Seq.index zeros' 0
+maskCount (_, _, zeros) = if Seq.null zeros' then 0 else Seq.index zeros' 0
+	where zeros' = Seq.takeWhileL (>=minimum) $ Seq.dropWhileL (>maximum) zeros
 
 maskChar :: Char -> Int -> (Char, Int)
 maskChar char num = if num == 0
@@ -70,9 +67,8 @@ mask :: Item -> (Stream, Int) -> (Stream, Int)
 mask item (stream, count) = case item of
 	Space _ -> (item <| stream, count)
 	Other _ -> (item <| stream, count)
-	Digit char total -> let
-		(char', count') = maskChar char $ max count $ maskCount total
-		in ((Other char') <| stream, count')
+	Digit char total -> ((Other char') <| stream, count')
+		where (char', count') = maskChar char $ max count $ maskCount total
 
 
 maskStream :: Stream -> Stream
