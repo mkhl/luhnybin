@@ -50,9 +50,9 @@ maskCount (_, _, zeros) = if null zeros' then 0 else index zeros' 0
 	where zeros' = takeWhileL (>=minimum) $ dropWhileL (>maximum) zeros
 
 maskChar :: Char -> Int -> (Char, Int)
-maskChar char num = if num == 0
+maskChar char count = if count == 0
 	then (char, 0)
-	else (masking, num - 1)
+	else (masking, count - 1)
 
 
 incr :: Int -> Item -> Item
