@@ -75,9 +75,9 @@ snarf item (stream, count) = case item of
 			then ((Other char) <| stream, 0)
 			else ((Other masking) <| stream, count' - 1)
 
+
 convert :: Stream -> Stream
 convert = fst . foldr snarf (Seq.empty, 0)
-
 
 update :: Int -> Stream -> Stream
 update num = fmap $ incr num
@@ -88,9 +88,9 @@ insert char stream
 	| isSpace char = (Space char) <| stream
 	| otherwise = (Other char) <| stream
 
+
 fromString :: String -> Stream
 fromString = foldr insert Seq.empty
-
 
 toString :: Stream -> String
 toString = toList . fmap toChar
