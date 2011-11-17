@@ -82,17 +82,17 @@ convert :: Stream -> Stream
 convert = fst . foldr snarf (Seq.empty, 0)
 
 
-insert :: Int -> Stream -> Stream
-insert num = fmap $ incr num
+update :: Int -> Stream -> Stream
+update num = fmap $ incr num
 
-insert_stream :: Char -> Stream -> Stream
-insert_stream char stream
-	| isDigit char = insert (digitToInt char) $ (item char) <| stream
+insert :: Char -> Stream -> Stream
+insert char stream
+	| isDigit char = update (digitToInt char) $ (item char) <| stream
 	| isSpace char = (Space char) <| stream
 	| otherwise = (Other char) <| stream
 
-inject :: String -> Stream
-inject = foldr insert_stream Seq.empty
+fromString :: String -> Stream
+fromString = foldr insert Seq.empty
 
 
 toString :: Stream -> String
@@ -104,7 +104,7 @@ toString = toList . fmap toChar
 
 
 luhn :: String -> String
-luhn = toString . convert . inject
+luhn = toString . convert . fromString
 
 
 main :: IO ()
