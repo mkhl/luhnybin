@@ -3,11 +3,9 @@ module Luhny where
 import Data.Char (isDigit, digitToInt)
 import Data.Foldable (foldl, foldr, toList)
 import Data.Functor (fmap)
-import Data.Sequence (Seq, (<|), (|>))
+import Data.Sequence (Seq, (<|), (|>), empty, null, index, takeWhileL, dropWhileL)
 
-import qualified Data.Sequence as Seq
-
-import Prelude hiding (minimum, maximum, foldr, foldl)
+import Prelude hiding (minimum, maximum, foldr, foldl, null)
 
 minimum = 14
 maximum = 16
@@ -38,7 +36,7 @@ double_plus double x y = (y + z) `mod` 10
 
 
 new :: Total
-new = (0, 0, Seq.empty)
+new = (0, 0, empty)
 
 add :: Int -> Total -> Total
 add number (total, count, zeros) = (total', count', zeros')
@@ -48,8 +46,8 @@ add number (total, count, zeros) = (total', count', zeros')
 		zeros' = if total' == 0 then count' <| zeros else zeros
 
 maskCount :: Total -> Int
-maskCount (_, _, zeros) = if Seq.null zeros' then 0 else Seq.index zeros' 0
-	where zeros' = Seq.takeWhileL (>=minimum) $ Seq.dropWhileL (>maximum) zeros
+maskCount (_, _, zeros) = if null zeros' then 0 else index zeros' 0
+	where zeros' = takeWhileL (>=minimum) $ dropWhileL (>maximum) zeros
 
 maskChar :: Char -> Int -> (Char, Int)
 maskChar char num = if num == 0
@@ -72,7 +70,7 @@ mask item (stream, count) = case item of
 
 
 maskStream :: Stream -> Stream
-maskStream = fst . foldr mask (Seq.empty, 0)
+maskStream = fst . foldr mask (empty, 0)
 
 update :: Int -> Stream -> Stream
 update num = fmap $ incr num
@@ -85,7 +83,7 @@ insert char stream
 
 
 fromString :: String -> Stream
-fromString = foldr insert Seq.empty
+fromString = foldr insert empty
 
 toString :: Stream -> String
 toString = toList . fmap toChar
