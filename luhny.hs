@@ -95,16 +95,16 @@ inject :: String -> Stream
 inject = foldr insert_stream Seq.empty
 
 
-extract :: Stream -> String
-extract = toList . fmap stringify
+toString :: Stream -> String
+toString = toList . fmap toChar
 	where
-		stringify (Space char) = char
-		stringify (Other char) = char
-		stringify (Digit char _) = char
+		toChar (Space char) = char
+		toChar (Other char) = char
+		toChar (Digit char _) = char
 
 
 luhn :: String -> String
-luhn = extract . convert . inject
+luhn = toString . convert . inject
 
 
 main :: IO ()
