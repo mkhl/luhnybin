@@ -34,10 +34,13 @@ data Item
 type Stream = Seq Item
 
 
+twice :: Int -> Int
+twice n = uncurry (+) $ flip divMod 10 $ 2 * n
+
 double_plus :: Bool -> Int -> Int -> Int
-double_plus double x y = let 
-	(d, m) = (2 * x) `divMod` 10
-	z = if double then d + m else x
+double_plus double x y = let
+	f = if double then twice else id
+	z = f x
 	in (y + z) `mod` 10
 
 
