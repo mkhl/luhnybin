@@ -49,10 +49,15 @@ add number (total, count, zeros) = let
 	zeros' = if total' == 0 then count' <| zeros else zeros
 	in (total', count', zeros')
 
-foo :: Total -> Int
-foo (_, _, zeros) = let
+maskCount :: Total -> Int
+maskCount (_, _, zeros) = let
 	zeros' = Seq.takeWhileL (>=minimum) $ Seq.dropWhileL (>maximum) zeros
 	in if Seq.null zeros' then 0 else Seq.index zeros' 0
+
+maskChar :: Char -> Int -> (Char, Int)
+maskChar char num = if num == 0
+	then (char, 0)
+	else (masking, num - 1)
 
 
 incr :: Int -> Item -> Item
@@ -61,22 +66,17 @@ incr num item = case item of
 	otherwise -> item
 
 
-bar :: Char -> Int -> (Char, Int)
-bar char num = if num == 0
-	then (char, 0)
-	else (masking, num - 1)
-
-snarf :: Item -> (Stream, Int) -> (Stream, Int)
-snarf item (stream, count) = case item of
+mask :: Item -> (Stream, Int) -> (Stream, Int)
+mask item (stream, count) = case item of
 	Space _ -> (item <| stream, count)
 	Other _ -> (item <| stream, count)
 	Digit char total -> let
-		(char', count') = bar char $ max count $ foo total
+		(char', count') = maskChar char $ max count $ maskCount total
 		in ((Other char') <| stream, count')
 
 
-convert :: Stream -> Stream
-convert = fst . foldr snarf (Seq.empty, 0)
+maskStream :: Stream -> Stream
+maskStream = fst . foldr mask (Seq.empty, 0)
 
 update :: Int -> Stream -> Stream
 update num = fmap $ incr num
@@ -100,7 +100,7 @@ toString = toList . fmap toChar
 
 
 luhn :: String -> String
-luhn = toString . convert . fromString
+luhn = toString . maskStream . fromString
 
 
 main :: IO ()
