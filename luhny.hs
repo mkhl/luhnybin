@@ -60,17 +60,13 @@ incr num item = case item of
 	Digit char total -> Digit char $ add num total
 	otherwise -> item
 
-eval :: Item -> Int
-eval item = case item of
-	Digit _ total -> foo total
-	otherwise -> 0
 
 snarf :: Item -> (Stream, Int) -> (Stream, Int)
 snarf item (stream, count) = case item of
 	Space _ -> (item <| stream, count)
 	Other _ -> (item <| stream, count)
 	Digit char total -> let
-		count' = max count $ eval item
+		count' = max count $ foo total
 		in if count' == 0
 			then ((Other char) <| stream, 0)
 			else ((Other masking) <| stream, count' - 1)
