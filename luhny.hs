@@ -27,12 +27,12 @@ data Item
 type Stream = Seq Item
 
 
-twice :: Int -> Int
-twice n = uncurry (+) $ flip divMod 10 $ 2 * n
+double :: Int -> Int
+double x = uncurry (+) $ flip divMod 10 $ 2 * x
 
 add :: Bool -> Int -> Int -> Int
-add double x y = (y + z) `mod` 10
-	where z = if double then twice x else x
+add twice x y = (y + z) `mod` 10
+	where z = if twice then double x else x
 
 
 new :: Total
