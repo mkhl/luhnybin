@@ -64,7 +64,7 @@ updateItem number item = case item of
 mask :: Item -> (Stream, Int) -> (Stream, Int)
 mask item (stream, count) = case item of
 	Space _ -> (item <| stream, count)
-	Other _ -> (item <| stream, count)
+	Other _ -> (item <| stream, 0)
 	Digit char total -> ((Other char') <| stream, count')
 		where (char', count') = maskChar char $ max count $ maskCount total
 
