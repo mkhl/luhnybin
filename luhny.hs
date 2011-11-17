@@ -61,15 +61,18 @@ incr num item = case item of
 	otherwise -> item
 
 
+bar :: Char -> Int -> (Char, Int)
+bar char num = if num == 0
+	then (char, 0)
+	else (masking, num - 1)
+
 snarf :: Item -> (Stream, Int) -> (Stream, Int)
 snarf item (stream, count) = case item of
 	Space _ -> (item <| stream, count)
 	Other _ -> (item <| stream, count)
 	Digit char total -> let
-		count' = max count $ foo total
-		in if count' == 0
-			then ((Other char) <| stream, 0)
-			else ((Other masking) <| stream, count' - 1)
+		(char', count') = bar char $ max count $ foo total
+		in ((Other char') <| stream, count')
 
 
 convert :: Stream -> Stream
