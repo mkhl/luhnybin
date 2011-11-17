@@ -1,7 +1,7 @@
 module Luhny where
 
 import Data.Char (isDigit, digitToInt)
-import Data.Foldable (foldl, foldr)
+import Data.Foldable (foldl, foldr, toList)
 import Data.Functor (fmap)
 import Data.Sequence (Seq, (<|), (|>))
 
@@ -95,13 +95,12 @@ inject :: String -> Stream
 inject = foldr insert_stream Seq.empty
 
 
-insert_string :: Item -> String -> String
-insert_string (Space char) = (char:)
-insert_string (Other char) = (char:)
-insert_string (Digit char _) = (char:)
-
 extract :: Stream -> String
-extract = foldr insert_string ""
+extract = toList . fmap stringify
+	where
+		stringify (Space char) = char
+		stringify (Other char) = char
+		stringify (Digit char _) = char
 
 
 luhn :: String -> String
