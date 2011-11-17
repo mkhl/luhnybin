@@ -56,8 +56,8 @@ maskChar char count = if count == 0
 
 
 updateItem :: Int -> Item -> Item
-updateItem num item = case item of
-	Digit char total -> Digit char $ updateTotal num total
+updateItem number item = case item of
+	Digit char total -> Digit char $ updateTotal number total
 	otherwise -> item
 
 
@@ -73,7 +73,7 @@ maskStream :: Stream -> Stream
 maskStream = fst . foldr mask (empty, 0)
 
 update :: Int -> Stream -> Stream
-update num = fmap $ updateItem num
+update number = fmap $ updateItem number
 
 insert :: Char -> Stream -> Stream
 insert char stream
