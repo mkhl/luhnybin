@@ -55,9 +55,6 @@ foo (_, _, zeros) = let
 	in if Seq.null zeros' then 0 else Seq.index zeros' 0
 
 
-item :: Char -> Item
-item char = Digit char new
-
 incr :: Int -> Item -> Item
 incr num item = case item of
 	Digit char total -> Digit char $ add num total
@@ -87,7 +84,7 @@ update num = fmap $ incr num
 
 insert :: Char -> Stream -> Stream
 insert char stream
-	| isDigit char = update (digitToInt char) $ (item char) <| stream
+	| isDigit char = update (digitToInt char) $ (Digit char new) <| stream
 	| isSpace char = (Space char) <| stream
 	| otherwise = (Other char) <| stream
 
