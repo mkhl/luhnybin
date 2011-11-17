@@ -30,18 +30,18 @@ type Stream = Seq Item
 twice :: Int -> Int
 twice n = uncurry (+) $ flip divMod 10 $ 2 * n
 
-double_plus :: Bool -> Int -> Int -> Int
-double_plus double x y = (y + z) `mod` 10
+add :: Bool -> Int -> Int -> Int
+add double x y = (y + z) `mod` 10
 	where z = if double then twice x else x
 
 
 new :: Total
 new = (0, 0, empty)
 
-add :: Int -> Total -> Total
-add number (total, count, zeros) = (total', count', zeros')
+updateTotal :: Int -> Total -> Total
+updateTotal number (total, count, zeros) = (total', count', zeros')
 	where
-		total' = double_plus (odd count) number total
+		total' = add (odd count) number total
 		count' = count + 1
 		zeros' = if total' == 0 then count' <| zeros else zeros
 
@@ -55,9 +55,9 @@ maskChar char count = if count == 0
 	else (masking, count - 1)
 
 
-incr :: Int -> Item -> Item
-incr num item = case item of
-	Digit char total -> Digit char $ add num total
+updateItem :: Int -> Item -> Item
+updateItem num item = case item of
+	Digit char total -> Digit char $ updateTotal num total
 	otherwise -> item
 
 
@@ -73,7 +73,7 @@ maskStream :: Stream -> Stream
 maskStream = fst . foldr mask (empty, 0)
 
 update :: Int -> Stream -> Stream
-update num = fmap $ incr num
+update num = fmap $ updateItem num
 
 insert :: Char -> Stream -> Stream
 insert char stream
