@@ -17,10 +17,9 @@ import com.google.common.collect.Ordering;
 
 import java.util.List;
 
-import static com.google.common.base.CharMatcher.DIGIT;
-
 class Mask implements Supplier<String> {
     private final static CharMatcher SPACE = CharMatcher.anyOf(" -");
+    private final static CharMatcher DIGIT = CharMatcher.JAVA_DIGIT;
     private final Ordering<Integer> INT = Ordering.natural();
 
     private final StringBuilder builder = new StringBuilder();
