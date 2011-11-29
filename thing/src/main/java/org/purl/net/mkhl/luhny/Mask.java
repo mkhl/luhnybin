@@ -19,7 +19,7 @@ import java.util.List;
 
 import static com.google.common.base.CharMatcher.DIGIT;
 
-public class Mask implements Supplier<String> {
+class Mask implements Supplier<String> {
     private final static CharMatcher SPACE = CharMatcher.anyOf(" -");
 
     private final Ordering<Integer> ints = Ordering.natural();
@@ -40,11 +40,11 @@ public class Mask implements Supplier<String> {
         digits.clear();
     }
 
-    public void addSpace(char space) {
+    private void addSpace(char space) {
         digits.add(new Space(space));
     }
 
-    public void addDigit(char digit) {
+    private void addDigit(char digit) {
         digits.add(new Digit(digit));
         int i = Maskable.MAX;
         for (Maskable maskable : Lists.reverse(digits)) {
@@ -55,12 +55,12 @@ public class Mask implements Supplier<String> {
         }
     }
 
-    public void addOther(char other) {
+    private void addOther(char other) {
         processDigits();
         builder.append(other);
     }
 
-    public void add(char next) {
+    private void add(char next) {
         if (DIGIT.apply(next))
             addDigit(next);
         else if (SPACE.apply(next))
