@@ -10,12 +10,17 @@
 
 package org.purl.net.mkhl.luhny;
 
+import com.google.common.base.CharMatcher;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 
 import java.util.List;
 
+import static com.google.common.base.CharMatcher.DIGIT;
+
 public class Mask {
+    private final static CharMatcher SPACE = CharMatcher.anyOf(" -");
+
     private final Ordering<Integer> ints = Ordering.natural();
     private final StringBuilder builder = new StringBuilder();
     private final List<Maskable> digits = Lists.newArrayList();
@@ -57,5 +62,19 @@ public class Mask {
             }
         }
         digits.clear();
+    }
+
+    public static String process(String input) {
+        Mask mask = new Mask();
+        for (int i = input.length(); i > 0; i--) {
+            char next = input.charAt(i - 1);
+            if (DIGIT.apply(next))
+                mask.addDigit(next);
+            else if (SPACE.apply(next))
+                mask.addSpace(next);
+            else
+                mask.addOther(next);
+        }
+        return mask.mask();
     }
 }

@@ -19,25 +19,9 @@ import java.io.InputStreamReader;
 import static com.google.common.base.CharMatcher.DIGIT;
 
 public class Main {
-    private final static CharMatcher SPACE = CharMatcher.anyOf(" -");
-
-    private static String process(String input) {
-        Mask mask = new Mask();
-        for (int i = input.length(); i > 0; i--) {
-            char next = input.charAt(i - 1);
-            if (DIGIT.apply(next))
-                mask.addDigit(next);
-            else if (SPACE.apply(next))
-                mask.addSpace(next);
-            else
-                mask.addOther(next);
-        }
-        return mask.mask();
-    }
-
     public static void main(String[] args) throws IOException {
         LineReader reader = new LineReader(new InputStreamReader(System.in));
         for (String line = reader.readLine(); line != null; line = reader.readLine())
-            System.out.println(process(line));
+            System.out.println(Mask.process(line));
     }
 }
