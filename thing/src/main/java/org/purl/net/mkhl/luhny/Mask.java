@@ -19,6 +19,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 class Mask implements Supplier<String> {
+    private final static CharMatcher SPACE = CharMatcher.anyOf(" -");
+    private final static CharMatcher DIGIT = CharMatcher.JAVA_DIGIT;
     private final static Ordering<Integer> INT = Ordering.natural();
 
     private final StringBuilder builder = new StringBuilder();
@@ -57,27 +59,12 @@ class Mask implements Supplier<String> {
     }
 
     private void add(char next) {
-        switch (next) {
-            case ' ':
-            case '-':
-                addSpace(next);
-                break;
-            case '0':
-            case '1':
-            case '2':
-            case '3':
-            case '4':
-            case '5':
-            case '6':
-            case '7':
-            case '8':
-            case '9':
-                addDigit(next);
-                break;
-            default:
-                addOther(next);
-                break;
-        }
+        if (DIGIT.apply(next))
+            addDigit(next);
+        else if (SPACE.apply(next))
+            addSpace(next);
+        else
+            addOther(next);
     }
 
     public String get() {
