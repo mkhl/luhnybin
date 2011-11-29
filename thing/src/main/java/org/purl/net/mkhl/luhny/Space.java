@@ -10,27 +10,23 @@
 
 package org.purl.net.mkhl.luhny;
 
-public class Space implements Maskable {
+public class Space implements Luhny {
     private final char space;
 
     public Space(char space) {
         this.space = space;
     }
 
-    public char toChar() {
-        return space;
-    }
-
-    public char toMask() {
-        return space;
-    }
-
-    public int toCount() {
+    public int getCount() {
         return 0;
     }
 
-    public int countDown(int count) {
-        return count;
+    public char getChar() {
+        return space;
+    }
+
+    public boolean mask() {
+        return false;
     }
 
     public boolean add(char digit) {

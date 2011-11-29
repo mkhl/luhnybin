@@ -10,8 +10,8 @@
 
 package org.purl.net.mkhl.luhny;
 
-public class Digit implements Maskable {
-    private final char digit;
+public class Digit implements Luhny {
+    private char digit;
     private int total;
     private int count;
     private int valid;
@@ -20,20 +20,17 @@ public class Digit implements Maskable {
         this.digit = digit;
     }
 
-    public char toChar() {
-        return digit;
-    }
-
-    public char toMask() {
-        return MASK;
-    }
-
-    public int toCount() {
+    public int getCount() {
         return valid;
     }
 
-    public int countDown(int count) {
-        return count - 1;
+    public char getChar() {
+        return digit;
+    }
+
+    public boolean mask() {
+        this.digit = MASK;
+        return true;
     }
 
     public boolean add(char digit) {

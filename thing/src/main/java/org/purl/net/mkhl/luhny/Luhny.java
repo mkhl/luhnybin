@@ -10,18 +10,16 @@
 
 package org.purl.net.mkhl.luhny;
 
-public interface Maskable {
+public interface Luhny {
     public final static int MIN = 14;
     public final static int MAX = 16;
     public final static char MASK = 'X';
 
-    public char toChar();
+    public int getCount();
 
-    public char toMask();
+    public char getChar();
+
+    public boolean mask();
 
     public boolean add(char digit);
-
-    public int toCount();
-
-    public int countDown(int count);
 }

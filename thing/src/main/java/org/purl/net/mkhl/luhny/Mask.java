@@ -23,18 +23,16 @@ class Mask implements Supplier<String> {
     private final static Ordering<Integer> INT = Ordering.natural();
 
     private final StringBuilder builder = new StringBuilder();
-    private final List<Maskable> digits = Lists.newArrayList();
+    private final List<Luhny> digits = Lists.newArrayList();
 
     private void processDigits() {
         int count = 0;
-        for (Maskable maskable : digits) {
-            count = INT.max(count, maskable.toCount());
-            if (count == 0)
-                builder.append(maskable.toChar());
-            else {
-                builder.append(maskable.toMask());
-                count = maskable.countDown(count);
-            }
+        for (Luhny luhny : digits) {
+            count = INT.max(count, luhny.getCount());
+            if (count > 0)
+                if (luhny.mask())
+                    count--;
+            builder.append(luhny.getChar());
         }
         digits.clear();
     }
@@ -45,11 +43,11 @@ class Mask implements Supplier<String> {
 
     private void addDigit(char digit) {
         digits.add(new Digit(digit));
-        int i = Maskable.MAX;
-        for (Maskable maskable : Lists.reverse(digits)) {
+        int i = Luhny.MAX;
+        for (Luhny luhny : Lists.reverse(digits)) {
             if (i == 0)
                 break;
-            if (maskable.add(digit))
+            if (luhny.add(digit))
                 i--;
         }
     }
