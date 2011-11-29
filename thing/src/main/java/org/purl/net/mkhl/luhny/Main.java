@@ -10,16 +10,33 @@
 
 package org.purl.net.mkhl.luhny;
 
+import com.google.common.collect.Sets;
 import com.google.common.io.LineReader;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Set;
 
 public class Main {
+    private final static Set<Character> spaces = Sets.newHashSet('-', ' ');
+
+    private static String process(String input) {
+        Mask mask = new Mask();
+        for (int i = input.length(); i > 0; i--) {
+            char next = input.charAt(i - 1);
+            if (Character.isDigit(next))
+                mask.addDigit(next);
+            else if (spaces.contains(next))
+                mask.addSpace(next);
+            else
+                mask.addOther(next);
+        }
+        return mask.mask();
+    }
+
     public static void main(String[] args) throws IOException {
-        MaskProcessor processor = new MaskProcessor('-', ' ');
         LineReader reader = new LineReader(new InputStreamReader(System.in));
         for (String line = reader.readLine(); line != null; line = reader.readLine())
-            System.out.println(processor.apply(line));
+            System.out.println(process(line));
     }
 }
