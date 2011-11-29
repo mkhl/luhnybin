@@ -15,6 +15,7 @@ import com.google.common.base.Supplier;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 
+import java.util.LinkedList;
 import java.util.List;
 
 class Mask implements Supplier<String> {
@@ -23,11 +24,11 @@ class Mask implements Supplier<String> {
     private final static Ordering<Integer> INT = Ordering.natural();
 
     private final StringBuilder builder = new StringBuilder();
-    private final List<Luhny> digits = Lists.newArrayList();
+    private final LinkedList<Luhny> digits = Lists.newLinkedList();
 
     private void processDigits() {
         int count = 0;
-        for (Luhny luhny : digits) {
+        for (Luhny luhny : Lists.reverse(digits)) {
             count = INT.max(count, luhny.getCount());
             if (count > 0)
                 if (luhny.mask())
@@ -38,13 +39,13 @@ class Mask implements Supplier<String> {
     }
 
     private void addSpace(char space) {
-        digits.add(new Space(space));
+        digits.addFirst(new Space(space));
     }
 
     private void addDigit(char digit) {
-        digits.add(new Digit(digit));
+        digits.addFirst(new Digit(digit));
         int i = Luhny.MAX;
-        for (Luhny luhny : Lists.reverse(digits)) {
+        for (Luhny luhny : digits) {
             if (i == 0)
                 break;
             if (luhny.add(digit))
