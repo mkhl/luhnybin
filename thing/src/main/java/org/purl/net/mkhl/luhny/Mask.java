@@ -25,6 +25,20 @@ public class Mask {
     private final StringBuilder builder = new StringBuilder();
     private final List<Maskable> digits = Lists.newArrayList();
 
+    private void processDigits() {
+        int count = 0;
+        for (Maskable maskable : digits) {
+            count = ints.max(count, maskable.toCount());
+            if (count == 0)
+                builder.append(maskable.toChar());
+            else {
+                builder.append(maskable.toMask());
+                count = maskable.countDown(count);
+            }
+        }
+        digits.clear();
+    }
+
     public void addSpace(char space) {
         digits.add(new Space(space));
     }
@@ -57,20 +71,6 @@ public class Mask {
     public String mask() {
         processDigits();
         return builder.reverse().toString();
-    }
-
-    private void processDigits() {
-        int count = 0;
-        for (Maskable maskable : digits) {
-            count = ints.max(count, maskable.toCount());
-            if (count == 0)
-                builder.append(maskable.toChar());
-            else {
-                builder.append(maskable.toMask());
-                count = maskable.countDown(count);
-            }
-        }
-        digits.clear();
     }
 
     public static String process(String input) {
