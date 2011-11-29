@@ -11,6 +11,7 @@
 package org.purl.net.mkhl.luhny;
 
 import com.google.common.base.CharMatcher;
+import com.google.common.base.Supplier;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 
@@ -18,7 +19,7 @@ import java.util.List;
 
 import static com.google.common.base.CharMatcher.DIGIT;
 
-public class Mask {
+public class Mask implements Supplier<String> {
     private final static CharMatcher SPACE = CharMatcher.anyOf(" -");
 
     private final Ordering<Integer> ints = Ordering.natural();
@@ -68,7 +69,7 @@ public class Mask {
             addOther(next);
     }
 
-    public String mask() {
+    public String get() {
         processDigits();
         return builder.reverse().toString();
     }
@@ -77,6 +78,6 @@ public class Mask {
         Mask mask = new Mask();
         for (int i = input.length() - 1; i >= 0; i--)
             mask.add(input.charAt(i));
-        return mask.mask();
+        return mask.get();
     }
 }
