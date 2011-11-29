@@ -21,15 +21,15 @@ import static com.google.common.base.CharMatcher.DIGIT;
 
 class Mask implements Supplier<String> {
     private final static CharMatcher SPACE = CharMatcher.anyOf(" -");
+    private final Ordering<Integer> INT = Ordering.natural();
 
-    private final Ordering<Integer> ints = Ordering.natural();
     private final StringBuilder builder = new StringBuilder();
     private final List<Maskable> digits = Lists.newArrayList();
 
     private void processDigits() {
         int count = 0;
         for (Maskable maskable : digits) {
-            count = ints.max(count, maskable.toCount());
+            count = INT.max(count, maskable.toCount());
             if (count == 0)
                 builder.append(maskable.toChar());
             else {
