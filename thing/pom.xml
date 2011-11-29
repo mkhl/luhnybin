@@ -13,7 +13,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>${groupId}.${artifactId}.Main</mainClass>
+                            <mainClass>${project.groupId}.${project.artifactId}.Main</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
