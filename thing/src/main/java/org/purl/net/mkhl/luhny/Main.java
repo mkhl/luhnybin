@@ -10,23 +10,24 @@
 
 package org.purl.net.mkhl.luhny;
 
-import com.google.common.collect.Sets;
+import com.google.common.base.CharMatcher;
 import com.google.common.io.LineReader;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Set;
+
+import static com.google.common.base.CharMatcher.DIGIT;
 
 public class Main {
-    private final static Set<Character> spaces = Sets.newHashSet('-', ' ');
+    private final static CharMatcher SPACE = CharMatcher.anyOf(" -");
 
     private static String process(String input) {
         Mask mask = new Mask();
         for (int i = input.length(); i > 0; i--) {
             char next = input.charAt(i - 1);
-            if (Character.isDigit(next))
+            if (DIGIT.apply(next))
                 mask.addDigit(next);
-            else if (spaces.contains(next))
+            else if (SPACE.apply(next))
                 mask.addSpace(next);
             else
                 mask.addOther(next);
