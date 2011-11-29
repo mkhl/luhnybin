@@ -75,10 +75,8 @@ public class Mask {
 
     public static String process(String input) {
         Mask mask = new Mask();
-        for (int i = input.length(); i > 0; i--) {
-            char next = input.charAt(i - 1);
-            mask.add(next);
-        }
+        for (int i = input.length(); i > 0; i--)
+            mask.add(input.charAt(i - 1));
         return mask.mask();
     }
 }
