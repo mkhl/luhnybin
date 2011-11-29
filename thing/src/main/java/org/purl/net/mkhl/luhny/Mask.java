@@ -45,6 +45,15 @@ public class Mask {
         builder.append(other);
     }
 
+    public void add(char next) {
+        if (DIGIT.apply(next))
+            addDigit(next);
+        else if (SPACE.apply(next))
+            addSpace(next);
+        else
+            addOther(next);
+    }
+
     public String mask() {
         processDigits();
         return builder.reverse().toString();
@@ -68,12 +77,7 @@ public class Mask {
         Mask mask = new Mask();
         for (int i = input.length(); i > 0; i--) {
             char next = input.charAt(i - 1);
-            if (DIGIT.apply(next))
-                mask.addDigit(next);
-            else if (SPACE.apply(next))
-                mask.addSpace(next);
-            else
-                mask.addOther(next);
+            mask.add(next);
         }
         return mask.mask();
     }
